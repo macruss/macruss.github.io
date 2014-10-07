@@ -1,0 +1,90 @@
+body{
+    background:url(http://subtlepatterns.com/patterns/crossword.png);
+    font:1em 'PT Sans', Tahoma, Arial;
+}
+
+#wrapper{
+    -webkit-perspective:500px;
+    -moz-perspective:500px;
+    -o-perspective:500px;
+    perspective:500px;
+    width:400px;
+    height:200px;
+}
+#wrapper{
+     -webkit-perspective:900px;
+    margin:80px auto;
+}
+
+#cube{
+    position:relative;
+    height:300px;
+    width:300px;
+    -webkit-transform-origin:50% 50% -150px;
+    -moz-transform-origin:50% 50% -150px;
+    -o-transform-origin:50% 50% -150px;
+    transform-origin:50% 50% -150px;
+    -webkit-transform-style:preserve-3d;
+    -moz-transform-style:preserve-3d;
+    -o-transform-style:preserve-3d;
+    transform-style:preserve-3d;
+
+
+}
+
+.side{
+    width:300px;
+    height:300px;
+    background:rgba(0,0,0,.3);
+    background:-webkit-radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.5));
+    background:-moz-radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.5));
+    background:-o-radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.5));
+    background:radial-gradient(rgba(0,0,0,.1), rgba(0,0,0,.5));
+    position:absolute;
+    border:1px solid #fff;
+    font-size:5em;
+    color:#fff;
+    line-height:300px;
+    text-align:center;
+    text-shadow:0 1px 3px rgba(0,0,0,.4);
+    box-shadow:0 0 6px rgba(0,0,0,.5);
+    -webkit-transform-origin:50% 50% -150px;
+    -moz-transform-origin:50% 50% -150px;
+    -o-transform-origin:50% 50% -150px;
+    transform-origin:50% 50% -150px;
+}
+
+#side2{
+    -webkit-transform:rotateY(90deg);
+    -moz-transform:rotateY(90deg);
+    -o-transform:rotateY(90deg);
+    transform:rotateY(90deg);
+}
+
+#side3{
+    -webkit-transform:rotateY(-90deg);
+    -moz-transform:rotateY(-90deg);
+    -o-transform:rotateY(-90deg);
+    transform:rotateY(-90deg);
+}
+#side4{
+    -webkit-transform:rotateX(90deg);
+    -moz-transform:rotateX(90deg);
+    -o-transform:rotateX(90deg);
+    transform:rotateX(90deg);
+}
+
+#side5{
+    -webkit-transform:rotateX(-90deg);
+    -moz-transform:rotateX(-90deg);
+    -o-transform:rotateX(-90deg);
+    transform:rotateX(-90deg);
+}
+
+#side6{
+    -webkit-transform:rotateY(180deg);
+    -moz-transform:rotateY(180deg);
+    -o-transform:rotateY(180deg);
+    transform:rotateY(180deg);
+
+}

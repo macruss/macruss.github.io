@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cube</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <div id="wrapper">
+    <div id="cube">
+      <div class="side" id="side1">HTML5</div>
+      <div class="side" id="side2">CSS3</div>
+      <div class="side" id="side3">JS</div>
+      <div class="side" id="side4">HTML5</div>
+      <div class="side" id="side5">CSS3</div>
+      <div class="side" id="side6">JS</div>
+    </div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script>
+    $(function() {
+      $(document).mousemove(function(e){
+        $('#cube').css({
+          '-webkit-transform':'rotateX('+(-e.pageY)+'deg) rotateY('+(-e.pageX)+'deg)'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
