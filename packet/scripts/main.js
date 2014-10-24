@@ -47,6 +47,9 @@
 
   $('.nav a').click(handlHash);
 
+  // Initialize the plugin smoothDivScroll with no custom options
+
+
 }());
 
 
