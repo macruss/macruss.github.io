@@ -1,0 +1,19 @@
+  <div id="makeMeScrollable">
+    <img src="images/main/demo/field.jpg" alt="Demo image" id="field" />
+    <img src="images/main/demo/gnome.jpg" alt="Demo image" id="gnome" />
+    <img src="images/main/demo/pencils.jpg" alt="Demo image" id="pencils" />
+    <img src="images/main/demo/golf.jpg" alt="Demo image" id="golf" />
+    <img src="images/main/demo/river.jpg" alt="Demo image" id="river" />
+    <img src="images/main/demo/train.jpg" alt="Demo image" id="train" />
+    <img src="images/main/demo/leaf.jpg" alt="Demo image" id="leaf" />
+    <img src="images/main/demo/dog.jpg" alt="Demo image" id="dog" />
+
+  </div>
+  <script>
+    $('#makeMeScrollable').ready(function () {
+      // None of the options are set
+      $("div#makeMeScrollable").smoothDivScroll({
+        autoScrollingMode: "onStart"
+      });
+    });
+  </script>
