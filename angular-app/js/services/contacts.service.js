@@ -2,11 +2,14 @@
   'use strict';
 
   angular.module('app')
-    .factory('contacts', contacts);
+    .service('contacts', contacts);
 
   contacts.$inject = ['$http'];
 
   function contacts($http) {
+
+    var contacts = CONTACTS_FILE;
+
     return {
       all: all,
       get: get,
@@ -14,46 +17,76 @@
     };
 
     function all() {
-      return $http.get('contacts.json')
-        .then(allComplete)
-        .catch(allFailed);
-
-      function allComplete(respons) {
-        return respons.data;
-        }
-
-      function allFailed(error) {
-        console.log('XHR Failed for contacts ' + error.data);
-      }
+      return contacts;
     }
 
     function get(id) {
-      return $http.get('contacts.json')
-        .then(getComplete)
-        .catch(getFailed);
-
-      function getComplete(respons) {
-        return respons.data[id-1];
-      };
-
-
-      function getFailed(error) {
-        console.log('XHR Failed for contacts ' + error.data);
-      }
+      var contact = null;
+      angular.forEach(contacts, function(value) {
+        if (value.id === +id)
+          contact = value;
+      });
+      return contact;
     }
 
     function update(contact) {
-      return $http.put('contacts.json', contact)
-        .then(updateComplete)
-        .catch(updateFailed);
+      angular.forEach(contacts, function(value) {
+        if (value.id === contact.id )
+          value = contact;
+      });
 
-      function updateComplete(respons) {
-        return respons.status;
-      }
+      // function updateComplete(respons) {
+      //   return respons.status;
+      //   console.log(respons.status);
+      // }
 
-      function updateFailed(error) {
-        console.log('XHR Failed for contact ' + error.data);
-      }
+      // function updateFailed(error) {
+      //   console.log('XHR Failed for contact ' + error.data);
+      // }
     }
+
+    // function all() {
+    //   return $http.get('contacts.json')
+    //     .then(allComplete)
+    //     .catch(allFailed);
+
+    //   function allComplete(respons) {
+    //     return respons.data;
+    //     }
+
+    //   function allFailed(error) {
+    //     console.log('XHR Failed for contacts ' + error.data);
+    //   }
+    // }
+
+    // function get(id) {
+    //   return $http.get('contacts.json')
+    //     .then(getComplete)
+    //     .catch(getFailed);
+
+    //   function getComplete(respons) {
+    //     return respons.data[id-1];
+    //   };
+
+
+    //   function getFailed(error) {
+    //     console.log('XHR Failed for contacts ' + error.data);
+    //   }
+    // }
+
+    // function update(contact) {
+    //   return $http.put('contacts.json', contact)
+    //     .then(updateComplete)
+    //     .catch(updateFailed);
+
+    //   function updateComplete(respons) {
+    //     return respons.status;
+    //     console.log(respons.status);
+    //   }
+
+    //   function updateFailed(error) {
+    //     console.log('XHR Failed for contact ' + error.data);
+    //   }
+    // }
   };
 })();

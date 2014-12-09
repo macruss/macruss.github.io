@@ -19,18 +19,11 @@
         get(vm.contactId);
 
         function get(id) {
-            return contacts.get(id)
-                .then(function(data) {
-                    vm.contact = data;
-                    return vm.contact;
-            });
+            return vm.contact = contacts.get(id);
         }
         
         function update(contact) {
-            return contacts.update(contact)
-                .then(function(data) {
-                    return data;
-            });
+            return contacts.update(contact);
         }
     }
 })();

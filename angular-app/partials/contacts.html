@@ -1,19 +1,32 @@
 <h2>Contacts</h2>
-
+<hr>
+<form class="form-inline">
+  <label for="search" class="col-sm-1 control-label">Search</label> 
+  <div class="form-group col-sm-3">
+    <input class="form-control" id="search" ng-model="vm.search">
+  </div>
+  <label class="col-sm-1 control-label">orderBy </label>
+  <div class="form-group">
+    <select class="form-control col-sm-2" ng-model="vm.orderByColumn" ng-options="col.name for col in vm.sortColumns"></select>
+  </div>
+</select>
+</form>
 <table class="table">
   <thead>
     <tr>
       <th>Name</th>
       <th>Email</th>
-      <th>phone</th>
+      <th>Phone</th>
+      <th>Company</th>
       <th>Date of birth</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="contact in vm.contacts">
+    <tr ng-repeat="contact in vm.contacts | filter:vm.search | orderBy:vm.orderByColumn.value">
       <td><a ng-href="#/{{contact.id}}" ng-bind="contact.first_name + ' ' + contact.last_name"></a></td>
       <td ng-bind="contact.email"></td>
       <td ng-bind="contact.phone"></td>
+      <td ng-bind="contact.company"></td>
       <td ng-bind="contact.birth_date"></td>
     </tr>
   </tbody>
