@@ -1,28 +1,54 @@
 <h2>Contacts</h2>
 <hr>
-<form class="form-inline">
-  <label for="search" class="col-sm-1 control-label">Search</label> 
-  <div class="form-group col-sm-3">
-    <input class="form-control" id="search" ng-model="vm.search">
+
+  <div class="col-sm-3">
+    <b>Search</b> 
+    <input class="form-control" id="search" ng-model="vm.search" ng-change="vm.setTotalItems()">
   </div>
-  <label class="col-sm-1 control-label">orderBy </label>
-  <div class="form-group">
-    <select class="form-control col-sm-2" ng-model="vm.orderByColumn" ng-options="col.name for col in vm.sortColumns"></select>
+
+  <div class="col-sm-2">
+    <b>Items per page </b>
+    <select class="form-control" ng-model="vm.itemsPerPage" ng-options="opt for opt in vm.optItemsPerPage"></select>
   </div>
-</select>
-</form>
-<table class="table">
+
+
+<table class="table table-hover">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Phone</th>
-      <th>Company</th>
-      <th>Date of birth</th>
+      <th>
+        <a ng-click="vm.sort('first_name')">
+          Name <span class="glyphicon" ng-class ="{'glyphicon-chevron-up': vm.isSortUp('first_name'),
+                                                'glyphicon-chevron-down': vm.isSortDown('first_name')}"></span>
+        </a>
+      </th>
+      <th>
+        <a ng-click="vm.sort('email')">
+          Email <span class="glyphicon" ng-class ="{'glyphicon-chevron-up': vm.isSortUp('email'),
+                                                'glyphicon-chevron-down': vm.isSortDown('email')}"></span>
+        </a>
+      </th>
+      <th>
+        <a ng-click="vm.sort('phone')">
+          Phone <span class="glyphicon" ng-class ="{'glyphicon-chevron-up': vm.isSortUp('phone'),
+                                                'glyphicon-chevron-down': vm.isSortDown('phone')}"></span>
+        </a>
+      </th>
+      <th>
+        <a ng-click="vm.sort('company')">
+          Company <span class="glyphicon" ng-class ="{'glyphicon-chevron-up': vm.isSortUp('company'),
+                                                'glyphicon-chevron-down': vm.isSortDown('company')}"></span>
+        </a>
+      </th>
+      <th>
+        <a ng-click="vm.sort('birth_date')">
+          Date of birth <span class="glyphicon" ng-class ="{'glyphicon-chevron-up': vm.isSortUp('birth_date'),
+                                                'glyphicon-chevron-down': vm.isSortDown('birth_date')}"></span>
+        </a>
+      </th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="contact in vm.contacts | filter:vm.search | orderBy:vm.orderByColumn.value">
+    <tr ng-repeat="contact in vm.contacts | orderBy:vm.sortField:vm.reverse | pagination:vm.currentPage:vm.itemsPerPage | limitTo:vm.itemsPerPage">
       <td><a ng-href="#/{{contact.id}}" ng-bind="contact.first_name + ' ' + contact.last_name"></a></td>
       <td ng-bind="contact.email"></td>
       <td ng-bind="contact.phone"></td>
@@ -31,3 +57,5 @@
     </tr>
   </tbody>
 </table>
+
+<pagination total-items="vm.totalItems" ng-model="vm.currentPage" items-per-page="vm.itemsPerPage"></pagination>

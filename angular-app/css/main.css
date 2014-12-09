@@ -1,3 +1,15 @@
 /*.form-control {
   width: 30% !important; 
 }*/
+
+th>a {
+  -webkit-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+th>a:hover {
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-user-select: none;
+}
