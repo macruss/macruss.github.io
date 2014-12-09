@@ -1,0 +1,12 @@
+<h2>Edit contact</h2>
+<hr>
+<form name="form" class="contact-form">
+  First name <input ng-model="vm.contact.first_name" name="cName"><br>
+  Last name <input ng-model="vm.contact.last_name" name="cSurname"><br>
+  Email <input type="email" ng-model="vm.contact.email" name="cEmail"><br>
+  Phone <input ng-model="vm.contact.phone" name="phoneNumber"><br>
+  Date of birth <input name="cBirthday" ng-model="vm.contact.birth_date">
+<br>
+  <button class="btn" ng-click="vm.update(vm.contact)" name="Submit">Save</button>
+</form><br>
+<a href="#/">Back to all contacts</a>
