@@ -1,6 +1,9 @@
 /*.form-control {
   width: 30% !important; 
 }*/
+.table {
+  margin-top: 30px !important;
+}
 
 th>a {
   -webkit-user-select: none;
