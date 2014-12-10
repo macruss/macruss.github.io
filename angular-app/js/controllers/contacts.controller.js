@@ -9,19 +9,25 @@
   function ContactsCtrl(contacts, $log, filterFilter) {
     var vm = this;
     vm.contacts = [];
+
+    // Pagination
+
+    vm.optItemsPerPage = [10, 20, 50];
+    vm.setTotalItems = setTotalItems;
+
+    // OrderBy
+
     vm.sortField = undefined;
     vm.reverse = false;
-    vm.optItemsPerPage = [10, 20, 50];
-    
-    vm.setTotalItems = setTotalItems;
     vm.sort = sort;
     vm.isSortUp = isSortUp;
     vm.isSortDown = isSortDown;
 
+
     activate();
 
     function activate() {
-      vm.contacts = contacts.all();
+      vm.contacts = contacts.all(); 
       vm.totalItems = vm.contacts.length;
       vm.currentPage = 1;
       vm.itemsPerPage = vm.optItemsPerPage[0];

@@ -11,7 +11,12 @@
                     controller: 'ContactsCtrl',
                     controllerAs: 'vm'
                 })
-                .when('/:contactId', {
+                .when('/:id', {
+                    templateUrl: 'partials/edit-contact.html',
+                    controller: 'EditContactCtrl',
+                    controllerAs: 'vm'
+                })
+                .when('/new-contact', {
                     templateUrl: 'partials/edit-contact.html',
                     controller: 'EditContactCtrl',
                     controllerAs: 'vm'

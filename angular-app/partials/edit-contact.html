@@ -1,47 +1,62 @@
-<h2>Edit contact</h2>
+<h2 ng-show="vm.contact.id">Edit contact</h2>
+<h2 ng-hide="vm.contact.id">New contact</h2>
 <hr>
-<form name="form" class="contact-form form-horizontal">
-  <div class="form-group">
-    <label for="contact-name" class="col-sm-2 control-label">First name</label> 
+<form name="form" class="contact-form form-horizontal" novalidate>
+
+  <div class="form-group" ng-class="{'has-error': form.cName.$dirty && form.cName.$error.required}">
+    <label for="contact-name" class="col-sm-2 control-label">First name *</label> 
     <div class="col-sm-4">
-      <input class="form-control col-sm-3" ng-model="vm.contact.first_name" id="contact-name" name="cName"><br>
+      <input class="form-control col-sm-3" ng-model="vm.contact.first_name" id="contact-name" name="cName" required><br>
     </div>
+    <div class="alert alert-danger col-sm-2" ng-show="form.cName.$dirty && form.cName.$error.required" role="alert">Required field</div>
   </div>
-  <div class="form-group">
-    <label for="contact-last-name" class="col-sm-2 control-label">Last name</label> 
+
+  <div class="form-group" ng-class="{'has-error': form.cSurname.$dirty && form.cSurname.$error.required}">
+    <label for="contact-last-name" class="col-sm-2 control-label">Last name *</label> 
     <div class="col-sm-4">
-      <input class="form-control col-sm-3" ng-model="vm.contact.last_name" id="contact-last-name" name="cSurname"><br>
+      <input class="form-control col-sm-3" ng-model="vm.contact.last_name" id="contact-last-name" name="cSurname" required><br>
     </div>
+    <div class="alert alert-danger col-sm-2" ng-show="form.cSurname.$dirty && form.cSurname.$error.required" role="alert">Required field</div>
   </div>
-  <div class="form-group">
+
+  <div class="form-group" ng-class="{'has-error': form.cEmail.$error.email}">
     <label for="contact-email" class="col-sm-2 control-label">Email</label> 
     <div class="col-sm-4">
       <input class="form-control col-sm-3" type="email" ng-model="vm.contact.email" id="contact-email" name="cEmail"><br>
     </div>
   </div>
+
   <div class="form-group">
     <label for="contact-phone" class="col-sm-2 control-label">Phone</label> 
     <div class="col-sm-4">
       <input class="form-control col-sm-3" ng-model="vm.contact.phone" id="contact-phone" name="phoneNumber"><br>
     </div>
   </div>
+
   <div class="form-group">
     <label for="contact-phone" class="col-sm-2 control-label">Company</label> 
     <div class="col-sm-4">
-      <input class="form-control col-sm-3" ng-model="vm.contact.company" id="contact-company" name="company"><br>
+      <input class="form-control col-sm-3" ng-model="vm.contact.company" id="contact-company" name="company">
     </div>
   </div>
+
   <div class="form-group">
     <label for="contact-birthday" class="col-sm-2 control-label">Date of birth </label>
     <div class="col-sm-4">
-      <input class="form-control col-sm-3" id="contact-birthday" name="cBirthday" ng-model="vm.contact.birth_date">
+      <input class="form-control col-sm-3" id="contact-birthday" name="cBirthday" ng-model="vm.contact.birth_date" datepicker>
     </div>
+    <div class="alert alert-success col-sm-3" ng-show="vm.isBirthDay()">The contact has a birthday today</div>
   </div>
-<br>
+
   <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button class="btn" ng-click="vm.update(vm.contact)" name="Submit">Save</button>
+    <div class="col-sm-offset-2 col-sm-1">
+      <button class="btn btn-primary btn-lg" ng-click="vm.submitAction(vm.contact)" name="Submit" ng-disabled="form.$invalid">Save</button>
     </div>
+
+    <div class="alert alert-danger col-sm-2" ng-show="form.$dirty && form.$invalid" role="alert">Has error</div>
+    <div class="alert alert-success col-sm-2" ng-show="vm.successMsg" role="alert">Contact saved</div>
   </div>
-</form><br>
+
+  
+</form>
 <a href="#/">Back to all contacts</a>

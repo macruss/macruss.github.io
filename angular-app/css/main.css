@@ -13,3 +13,19 @@ th>a:hover {
   text-decoration: none;
   -webkit-user-select: none;
 }
+
+.alert { 
+  margin-bottom: 0px !important;
+  padding: 6px !important;
+  transition: all .3s !important;
+}
+
+.contact-form .ng-invalid.ng-dirty {
+
+  border-color: #ebccd1;
+}
+
+.contact-form .ng-valid.ng-dirty {
+
+  border-color: #d6e9c6;
+}

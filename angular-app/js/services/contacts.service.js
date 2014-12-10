@@ -13,7 +13,8 @@
     return {
       all: all,
       get: get,
-      update: update
+      update: update,
+      add: add
     };
 
     function all() {
@@ -34,15 +35,12 @@
         if (value.id === contact.id )
           value = contact;
       });
+    }
 
-      // function updateComplete(respons) {
-      //   return respons.status;
-      //   console.log(respons.status);
-      // }
-
-      // function updateFailed(error) {
-      //   console.log('XHR Failed for contact ' + error.data);
-      // }
+    function add(contact) {
+          contact.id = contacts.length + 1;
+          console.log(contact);
+          contacts.push(contact);
     }
 
     // function all() {
