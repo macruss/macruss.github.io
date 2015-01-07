@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font:20px Arial;
+  background: url(/images/congruent_pentagon.png);
+}
+
+hr {
+  color: #fff;
+}
+
+.container {
+  max-width: 960px;
+  margin: 20px auto;
+  min-height: 500px;
+  border-radius: 10px;
+  background-color: rgba(255,255,255,.7);
+}
+
+.container:after {
+  content:"";
+  display: table;
+  clear:both;
+}
+
+.nav-tabs {
+  margin: 0 20px;
+}
+
+.nav-tabs>ul>li {
+  list-style: none;
+  display: inline-block;
+}
+
+.nav-tabs>ul>li a {
+  display: block;
+  margin: 0 5px;
+  text-decoration: none;
+  color:#333333;
+  padding: 15px 10px;
+}
+.nav-tabs>ul>li a:hover {
+  background-color: rgba(177,246,203, .5);
+}
+.selected {
+  font-weight: bold;
+  border-bottom: 3px solid #B1F6CB;
+}
+.content {
+  margin: 20px 30px;
+}
+
+.question {
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  line-height: 1.5em;
+  font-size: 30px;
+  float: left;
+  border: 1px solid #909090;
+  margin:10px;
+  border-radius: 5px;
+
+}
+
+input.answer {
+  border: 1px solid #222;
+  height: 50px;
+  font-size: 30px;
+  text-align: center;
+  width: 200px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.right, .wrong {
+  width: 200px;
+  height: 200px;
+  float: left;
+  margin: 10px;
+  border: 2px solid #C7C7C7;
+  border-radius: 5px;
+  font-size: 50px;
+}
+
+.right{
+  color: green;
+}
+
+.wrong{
+  color: red;
+}
+.score span {
+  display: inline-block;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  color: black;
+  font-size: 80px;
+}
