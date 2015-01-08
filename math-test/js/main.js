@@ -69,7 +69,7 @@
       // init checkbox
 
       inputs.each(function() {
-        if (questions.opts.indexOf($(this).attr('id')) !== -1) {
+        if ($.inArray($(this).attr('id'), questions.opts) !== -1) {
           $(this).prop('checked', true);
         }
       });
@@ -83,12 +83,12 @@
           opts.push(operator);
         } else {
 
-          if (opts.length === 1) {          // at least one checkbox
+          if (opts.length <= 1) {          // at least one checkbox
             $(el).prop('checked', true); 
             return false;
           }
 
-          opts.splice(opts.indexOf(operator), 1);
+          opts.splice($.inArray(operator, opts), 1);
         }
       });
 
