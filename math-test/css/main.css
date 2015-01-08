@@ -51,7 +51,7 @@ hr {
   border-bottom: 3px solid #B1F6CB;
 }
 .content {
-  margin: 20px 30px;
+  margin: 50px;
 }
 
 .question {
@@ -63,7 +63,7 @@ hr {
   float: left;
   border: 1px solid #909090;
   margin:10px;
-  border-radius: 5px;
+  border-radius: 10px;
 
 }
 
@@ -74,7 +74,7 @@ input.answer {
   text-align: center;
   width: 200px;
   margin: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .right, .wrong {
@@ -82,8 +82,9 @@ input.answer {
   height: 200px;
   float: left;
   margin: 10px;
+  padding: 5px;
   border: 2px solid #C7C7C7;
-  border-radius: 5px;
+  border-radius: 10px;
   font-size: 50px;
 }
 
@@ -101,4 +102,9 @@ input.answer {
   text-align: center;
   color: black;
   font-size: 80px;
+}
+
+.error {
+  background: rgba(255,0,0,.2); !important;
+  border: 3px solid #d50000 !important;
 }

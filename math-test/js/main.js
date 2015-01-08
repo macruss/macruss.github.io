@@ -28,6 +28,7 @@
         }
 
         this.result = eval(expression);
+
     return expression;
   };
 
@@ -40,8 +41,8 @@
     this.wrong = 0;
   }
 
-  Score.prototype.update = function(arg) {
-    if (arg) {
+  Score.prototype.update = function(answ) {
+    if (answ) {
       this.right += 1;
     } else {
       this.wrong += 1;
@@ -56,24 +57,17 @@
   }
 
   var questions = new Questions(),
-    score = new Score();
+      score = new Score();
 
   $(document).ajaxComplete(function () {
 
-    $('.nav-tabs a').click(function() {
-      var link = $(this).attr('href');
-      $('.selected').removeClass('selected');
-      $(this).addClass('selected');
-
-      location.hash = link;
-
-      return false;
-    });
-
     // if Setup page
 
-    if (location.hash === '#/setup'){
+    if (location.hash === '#/setup') {
       var inputs = $('.setup > input');
+
+      // init checkbox
+
       inputs.each(function() {
         if (questions.opts.indexOf($(this).attr('id')) !== -1) {
           $(this).prop('checked', true);
@@ -88,6 +82,12 @@
         if ($(el).prop('checked')) {
           opts.push(operator);
         } else {
+
+          if (opts.length === 1) {          // at least one checkbox
+            $(el).prop('checked', true); 
+            return false;
+          }
+
           opts.splice(opts.indexOf(operator), 1);
         }
       });
@@ -103,7 +103,7 @@
       $('form[name="answer"]').bind('submit', function() {
         var answer = +$('form[name="answer"] > input').val();
 
-        if (!isNaN(answer) && answer >= 0) {
+        if (answer && !isNaN(answer) && answer >= 0) {
           score.update(questions.checkAnswer(answer));
           render();
         }
@@ -111,5 +111,18 @@
         return false;
       });
     }
+  });
+
+  // nav tabs event
+
+  $('.nav-tabs a').click(function() {
+    var link = $(this).attr('href');
+
+    $('.selected').removeClass('selected');
+    $(this).addClass('selected');
+
+    location.hash = link;
+
+    return false;
   });
 }());
