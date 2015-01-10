@@ -1,9 +1,9 @@
-(function() {
+;(function() {
   'use strict';
 
   $(document).ajaxComplete(function() {
 
-    if (location.hash === '#/') {
+    if (!location.hash || location.hash === '#/') {
 
       $('.answer').keyup(function() {
         var answer = $(this).val(),
