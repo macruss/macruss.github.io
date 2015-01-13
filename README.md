@@ -13,4 +13,4 @@ macruss.github.io
 - [Custom Built and Crisp Icon Fonts] (https://icomoon.io/#home)
 
 ##JavaScript links
-- [http://gridster.net/]}
+- [gridster.js - Plug in to the grid](http://gridster.net/)
