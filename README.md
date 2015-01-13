@@ -6,6 +6,8 @@ macruss.github.io
 - [Discover Meteor] (https://github.com/DiscoverMeteor)
 - [Building a customized accounts ui for Meteor] (http://blog.benmcmahen.com/post/41741539120/building-a-customized-accounts-ui-for-meteor)
 - [meteor-bootstrap] (https://github.com/Nemo64/meteor-bootstrap)
+- [Bootstrap 3 - Sublime Plugin] (https://github.com/JasonMortonNZ/bs3-sublime-plugin)
+- [Meteor.js and Twitter Bootstrap - The right way](http://www.manuel-schoebel.com/blog/meteorjs-and-twitter-bootstrap---the-right-way)
 
 ##CSS links
 - [Custom Built and Crisp Icon Fonts] (https://icomoon.io/#home)
