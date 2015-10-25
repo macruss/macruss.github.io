@@ -1,4 +1,4 @@
-(function () {
+;(function () {
   'use strict';
 
   function Questions() {
@@ -59,7 +59,7 @@
   var questions = new Questions(),
       score = new Score();
 
-  $(document).ajaxComplete(function () {
+  $(document).ajaxComplete(function() {
 
     // if Setup page
 
