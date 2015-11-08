@@ -28,18 +28,23 @@ var Grid = (function () {
         this.canvas = conf.canvas;
         this.ctx = conf.canvas.getContext('2d');
         this.scale = conf.scale;
-        this.cellSize = Math.floor(this.scale * 5);
+        this.cellSize = Math.round(this.scale * 5);
         this.wCells = conf.ratio[0];
         this.hCells = conf.ratio[1];
-        this.zp = { x: 0, y: 0 };
+        this.zp = { x: 0, y: 0 }; // zero point - begin of ctx
         this.mode = 'draw';
         this.cells = new Array(this.wCells * this.hCells);
+        this.events = {
+            mouseup: function (e) { return _this.handleMouseUp(e); },
+            mousedown: function (e) { return _this.handleMouseDown(e); },
+            mousemove: function (e) { return _this.handleMouseMove(e); },
+            mousewheel: function (e) { return _this.handleScroll(e); }
+        };
         this.draw();
         // events
-        this.canvas.addEventListener('mouseup', function (e) { return _this.handleMouseUp(e); });
-        this.canvas.addEventListener('mousedown', function (e) { return _this.handleMouseDown(e); });
-        this.canvas.addEventListener('mousemove', function (e) { return _this.handleMouseMove(e); });
-        this.canvas.addEventListener('mousewheel', function (e) { return _this.handleScroll(e); });
+        for (var e in this.events) {
+            this.canvas.addEventListener(e, this.events[e]);
+        }
     }
     Grid.transformedPoint = function (x, y) {
         return { x: x, y: y };
@@ -75,23 +80,23 @@ var Grid = (function () {
         return this.cells[x + this.wCells * y];
     };
     Grid.prototype.zoom = function (pt, zoomDirection) {
-        var delta = zoomDirection ? 0.25 : -0.25;
-        this.scale += delta;
-        this.scale = Math.max(1, this.scale);
-        this.cellSize = Math.floor(this.scale * 5);
-        this.redraw();
+        var delta = zoomDirection ? 1.25 : .8;
+        var oldSize = this.cellSize;
+        this.scale = +Math.max(1, this.scale * delta).toFixed(1);
+        this.cellSize = Math.round(this.scale * 5);
+        if (this.scale >= 1) {
+            this.moveStart = true;
+            this.move(Math.round((pt.x - this.zp.x) * (1 - this.cellSize / oldSize)), Math.round((pt.y - this.zp.y) * (1 - this.cellSize / oldSize)));
+            this.moveStart = null;
+        }
+        $config[2].value = this.scale;
     };
-    Grid.prototype.drag = function (e) {
-        if (this.dragStart) {
-            // console.log(e.offsetX - this.dragStart.x, e.offsetY - this.dragStart.y);
-            // this.zp.x += e.offsetX - this.dragStart.x;
-            // this.zp.y += e.offsetY - this.dragStart.y;
-            this.zp.x += e.movementX;
-            this.zp.y += e.movementY;
-            // console.log(this.zp);
+    Grid.prototype.move = function (x, y) {
+        if (this.moveStart) {
+            this.zp.x += x;
+            this.zp.y += y;
             this.clearGrid();
-            this.ctx.translate(e.movementX, e.movementY);
-            // console.log(e);
+            this.ctx.translate(x, y);
             this.redraw();
         }
     };
@@ -122,13 +127,13 @@ var Grid = (function () {
             }
         }
         else {
-            this.dragStart = null;
+            this.moveStart = null;
         }
         return e.preventDefault() && false;
     };
     Grid.prototype.handleMouseDown = function (e) {
         if (this.mode === 'move') {
-            this.dragStart = { x: e.offsetX, y: e.offsetY };
+            this.moveStart = { x: e.offsetX, y: e.offsetY };
         }
     };
     Grid.prototype.handleMouseMove = function (e) {
@@ -137,7 +142,7 @@ var Grid = (function () {
                 this.handleMouseUp(e);
             }
             else {
-                this.drag(e);
+                this.move(e.movementX, e.movementY);
             }
         }
     };
@@ -148,23 +153,64 @@ var Grid = (function () {
         };
         this.zoom(pt, e.wheelDelta > 0);
     };
+    Grid.prototype.update = function (conf) {
+        this.scale = conf.scale || this.scale;
+        this.cellSize = Math.round(this.scale * 5);
+        this.wCells = conf.ratio[0];
+        this.hCells = conf.ratio[1];
+        this.cells = new Array(this.wCells * this.hCells);
+        this.clearGrid();
+        this.ctx.translate(-this.zp.x, -this.zp.y);
+        this.zp.x = 0;
+        this.zp.y = 0;
+        this.redraw();
+    };
+    Grid.prototype.destroy = function () {
+        this.clearGrid();
+        this.cells.length = 0;
+        this.ctx.translate(-this.zp.x, -this.zp.y);
+        for (var e in this.events) {
+            this.canvas.removeEventListener(e, this.events[e]);
+        }
+    };
     return Grid;
 })();
 var canvas = document.querySelector("#canvas");
 var colorpicker = document.querySelector("#colorpicker");
 var $btns = document.querySelectorAll(".actions button");
+var $config = document.querySelectorAll(".config input");
+var $resetBtn = document.querySelector("#reset");
 var grid = new Grid({
     canvas: canvas,
-    ratio: [70, 60],
-    scale: 1.5
+    ratio: [
+        +$config[0].value,
+        +$config[1].value
+    ],
+    scale: +$config[2].value
 });
 Array.prototype.forEach.call($btns, function (el) {
     el.addEventListener('click', handleClickActionsBtn);
 });
+$resetBtn.addEventListener('click', function (e) {
+    grid.update({
+        ratio: [
+            +$config[0].value,
+            +$config[1].value
+        ],
+        scale: +$config[2].value
+    });
+});
 document.addEventListener('keyup', function (e) {
     e.preventDefault();
+    // console.log(e.which);
+    if (e.which === 17) {
+        grid.mode = 'draw';
+        canvas.style.cursor = 'default';
+        $btns[0].classList.add('selected');
+        $btns[1].classList.remove('selected');
+    }
     if (e.altKey && e.ctrlKey) {
-        if (e.which === 68) {
+        if (e.which === 68 || e.which === 17) {
             grid.mode = 'draw';
             canvas.style.cursor = 'default';
             $btns[0].classList.add('selected');
@@ -178,11 +224,18 @@ document.addEventListener('keyup', function (e) {
         }
     }
 });
+document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey) {
+        grid.mode = 'move';
+        canvas.style.cursor = 'move';
+        $btns[1].classList.add('selected');
+        $btns[0].classList.remove('selected');
+    }
+});
 function handleClickActionsBtn(e) {
     grid.mode = e.currentTarget.id;
     if (!hasClass(e.currentTarget, 'selected')) {
         grid.mode = e.currentTarget.id;
-        // console.log(grid.mode);
         toggleClass($btns, 'selected');
     }
 }
