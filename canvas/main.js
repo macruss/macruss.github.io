@@ -132,6 +132,34 @@ var Grid = (function () {
             y >= 0 &&
             y < this.hCells;
     };
+    Grid.prototype.resize = function (width, height) {
+        this.ctx.translate(-this.zp.x, -this.zp.y);
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.ctx.translate(this.zp.x, this.zp.y);
+        grid.redraw();
+    };
+    Grid.prototype.update = function (conf) {
+        this.scale = conf.scale || this.scale;
+        this.ctx = this.canvas.getContext('2d');
+        this.cellSize = Math.round(this.scale * 5);
+        this.wCells = conf.ratio[0];
+        this.hCells = conf.ratio[1];
+        this.cells = new Array(this.wCells * this.hCells);
+        this.clearGrid();
+        this.ctx.translate(-this.zp.x, -this.zp.y);
+        this.zp.x = 0;
+        this.zp.y = 0;
+        this.redraw();
+    };
+    Grid.prototype.destroy = function () {
+        this.clearGrid();
+        this.cells.length = 0;
+        this.ctx.translate(-this.zp.x, -this.zp.y);
+        for (var e in this.events) {
+            this.canvas.removeEventListener(e, this.events[e]);
+        }
+    };
     // event hendlers
     Grid.prototype.handleMouseUp = function (e) {
         if (this.mode === 'draw') {
@@ -167,26 +195,6 @@ var Grid = (function () {
         };
         this.zoom(pt, e.wheelDelta > 0);
     };
-    Grid.prototype.update = function (conf) {
-        this.scale = conf.scale || this.scale;
-        this.cellSize = Math.round(this.scale * 5);
-        this.wCells = conf.ratio[0];
-        this.hCells = conf.ratio[1];
-        this.cells = new Array(this.wCells * this.hCells);
-        this.clearGrid();
-        this.ctx.translate(-this.zp.x, -this.zp.y);
-        this.zp.x = 0;
-        this.zp.y = 0;
-        this.redraw();
-    };
-    Grid.prototype.destroy = function () {
-        this.clearGrid();
-        this.cells.length = 0;
-        this.ctx.translate(-this.zp.x, -this.zp.y);
-        for (var e in this.events) {
-            this.canvas.removeEventListener(e, this.events[e]);
-        }
-    };
     return Grid;
 })();
 var $canvas = document.querySelector("#canvas");
@@ -194,6 +202,8 @@ var $colorpicker = document.querySelector("#colorpicker");
 var $btns = document.querySelectorAll(".actions button");
 var $config = document.querySelectorAll(".config input");
 var $resetBtn = document.querySelector("#reset");
+$canvas.width = window.innerWidth;
+$canvas.height = window.innerHeight;
 var grid = new Grid({
     canvas: $canvas,
     ratio: [
@@ -245,6 +255,13 @@ document.addEventListener('keydown', function (e) {
         $btns[1].classList.add('selected');
         $btns[0].classList.remove('selected');
     }
+});
+var resizedFinished;
+window.addEventListener('resize', function (e) {
+    clearTimeout(resizedFinished);
+    resizedFinished = setTimeout(function () {
+        grid.resize(window.innerWidth, window.innerHeight);
+    }, 250);
 });
 function handleClickActionsBtn(e) {
     grid.mode = e.currentTarget.id;
