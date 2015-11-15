@@ -9,13 +9,13 @@ body {
 }
 .left-block {
   position: absolute;
-  right: 30px;
+  right: 0px;
 }
 .left-block .controls,
 .left-block .config {
   vertical-align: top;
-  width: 100px;
-  margin-top: 30px;
+  width: 60px;
+  margin: 40px 40px 0 0;
   z-index: 10;
 }
 .left-block .controls .input-group,
@@ -34,9 +34,10 @@ body {
 .left-block .controls .actions button,
 .left-block .config .actions button {
   display: block;
-  width: 50px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   background: #ccc;
+  font-size: 2em;
   outline: none;
 }
 .left-block .controls .colorpicker button:first-child,

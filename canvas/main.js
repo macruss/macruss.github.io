@@ -15,6 +15,10 @@ var Point = (function () {
             y: Math.floor(this.y / ratio)
         };
     };
+    Point.prototype.add = function (p) {
+        this.x = this.x + p.x;
+        this.y = this.y + p.y;
+    };
     return Point;
 })();
 var Cell = (function () {
@@ -26,7 +30,7 @@ var Cell = (function () {
         this.draw();
     }
     Cell.prototype.draw = function () {
-        var ctx = grid.ctx, size = grid.cellSize, x = toPixel(this.x, size) + 1, y = toPixel(this.y, size) + 1;
+        var ctx = this.grid.ctx, size = this.grid.cellSize, x = toPixel(this.x, size) + 1, y = toPixel(this.y, size) + 1;
         ctx.fillStyle = this.color;
         ctx.fillRect(x, y, size - 1, size - 1);
     };
@@ -42,6 +46,7 @@ var Grid = (function () {
         this.canvas = conf.canvas;
         this.ctx = conf.canvas.getContext('2d');
         this.scale = conf.scale;
+        this.dist = null;
         this.cellSize = Math.round(this.scale * 5);
         this.wCells = conf.ratio[0];
         this.hCells = conf.ratio[1];
@@ -52,7 +57,12 @@ var Grid = (function () {
             mouseup: function (e) { return _this.handleMouseUp(e); },
             mousedown: function (e) { return _this.handleMouseDown(e); },
             mousemove: function (e) { return _this.handleMouseMove(e); },
-            mousewheel: function (e) { return _this.handleScroll(e); }
+            touchstart: function (e) { return _this.handleTouchStart(e); },
+            touchend: function (e) { return _this.handleTouchEnd(e); },
+            touchmove: function (e) { return _this.handleTouchMove(e); },
+            mousewheel: function (e) { return _this.handleZoom(e); },
+            wheel: function (e) { return _this.handleZoom(e); },
+            scroll: function (e) { return _this.handleZoom(e); }
         };
         this.draw();
         // setup events
@@ -81,10 +91,10 @@ var Grid = (function () {
             }
         }
     };
-    Grid.prototype.setCell = function (x, y, color) {
-        var i = x + this.wCells * y;
+    Grid.prototype.setCell = function (pt, color) {
+        var i = pt.x + this.wCells * pt.y;
         if (!this.cells[i]) {
-            this.cells[i] = new Cell(x, y, color, this);
+            this.cells[i] = new Cell(pt.x, pt.y, color, this);
         }
         else {
             this.cells[i].setColor(color);
@@ -93,27 +103,21 @@ var Grid = (function () {
     Grid.prototype.getCell = function (x, y) {
         return this.cells[x + this.wCells * y];
     };
-    Grid.prototype.zoom = function (pt, zoomDirection) {
-        var delta = zoomDirection ? 1.25 : .8;
+    Grid.prototype.zoom = function (focus, factor) {
         var oldSize = this.cellSize;
-        this.scale = +Math.max(1, this.scale * delta).toFixed(1);
+        this.scale = +Math.max(1, this.scale * factor).toFixed(1);
         this.cellSize = Math.round(this.scale * 5);
         if (this.scale >= 1) {
             var k = 1 - this.cellSize / oldSize;
-            this.moveStart = true;
-            this.move(Math.round((pt.x - this.zp.x) * k), Math.round((pt.y - this.zp.y) * k));
-            this.moveStart = null;
+            this.moveTo(Math.round((focus.x - this.zp.x) * k), Math.round((focus.y - this.zp.y) * k));
         }
-        $config[2].value = this.scale;
+        // $config[2].value = this.scale;
     };
-    Grid.prototype.move = function (x, y) {
-        if (this.moveStart) {
-            this.zp.x += x;
-            this.zp.y += y;
-            this.clearGrid();
-            this.ctx.translate(x, y);
-            this.redraw();
-        }
+    Grid.prototype.moveTo = function (x, y) {
+        this.zp.x += x;
+        this.zp.y += y;
+        this.ctx.translate(x, y);
+        this.redraw();
     };
     Grid.prototype.getScale = function () {
         return this.scale;
@@ -126,18 +130,18 @@ var Grid = (function () {
         this.clearGrid();
         this.draw();
     };
-    Grid.prototype.inGrid = function (x, y) {
-        return x >= 0 &&
-            x < this.wCells &&
-            y >= 0 &&
-            y < this.hCells;
+    Grid.prototype.inGrid = function (pt) {
+        return pt.x >= 0 &&
+            pt.x < this.wCells &&
+            pt.y >= 0 &&
+            pt.y < this.hCells;
     };
     Grid.prototype.resize = function (width, height) {
         this.ctx.translate(-this.zp.x, -this.zp.y);
         this.canvas.width = width;
         this.canvas.height = height;
         this.ctx.translate(this.zp.x, this.zp.y);
-        grid.redraw();
+        this.redraw();
     };
     Grid.prototype.update = function (conf) {
         this.scale = conf.scale || this.scale;
@@ -162,38 +166,85 @@ var Grid = (function () {
     };
     // event hendlers
     Grid.prototype.handleMouseUp = function (e) {
+        e.preventDefault();
         if (this.mode === 'draw') {
-            var x = toRelativeUnit(e.offsetX - this.zp.x, this.cellSize), y = toRelativeUnit(e.offsetY - this.zp.y, this.cellSize);
-            if (this.inGrid(x, y)) {
-                this.setCell(x, y, $colorpicker.value);
+            var pt = new Point(e.clientX - this.zp.x, e.clientY - this.zp.y).toRelativeUnit(this.cellSize);
+            if (this.inGrid(pt)) {
+                this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
             }
         }
-        else {
-            this.moveStart = null;
-        }
-        return e.preventDefault() && false;
+        this.moveStart = null;
     };
     Grid.prototype.handleMouseDown = function (e) {
-        if (this.mode === 'move') {
-            this.moveStart = { x: e.offsetX, y: e.offsetY };
-        }
+        e.preventDefault();
+        this.moveStart = new Point(e.clientX, e.clientY);
     };
     Grid.prototype.handleMouseMove = function (e) {
-        if (e.which === 1) {
+        e.preventDefault();
+        if (this.moveStart) {
+            var pt = new Point(e.clientX - this.zp.x, e.clientY - this.zp.y).toRelativeUnit(this.cellSize);
             if (this.mode === 'draw') {
-                this.handleMouseUp(e);
+                this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
             }
-            else {
-                this.move(e.movementX, e.movementY);
+            else if (this.mode === 'move') {
+                this.moveTo(e.clientX - this.moveStart.x, e.clientY - this.moveStart.y);
+                this.moveStart = { x: e.clientX, y: e.clientY };
             }
         }
     };
-    Grid.prototype.handleScroll = function (e) {
+    Grid.prototype.handleTouchStart = function (e) {
+        var touch = e.touches && e.touches.length == 1 ?
+            e.touches[0] : null;
+        if (touch) {
+            var touchPoint = new Point(touch.clientX, touch.clientY);
+            this.moveStart = touchPoint;
+            this.setCell(touchPoint, $colorpicker && $colorpicker.value || 'black');
+        }
+        if (e.touches.length == 2) {
+            var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY);
+            this.dist = Grid.getDistance(t1, t2);
+        }
+    };
+    Grid.prototype.handleTouchEnd = function (e) {
+        if (this.dist) {
+            this.dist = null;
+        }
+        this.moveStart = null;
+    };
+    Grid.prototype.handleTouchMove = function (e) {
+        e.preventDefault();
+        var touch = e.touches && e.touches.length == 1 ?
+            e.touches[0] : null;
+        if (touch) {
+            var pt = new Point(touch.clientX - this.zp.x, touch.clientY - this.zp.y).toRelativeUnit(this.cellSize);
+            if (this.mode === 'draw') {
+                this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
+            }
+            else if (this.mode === 'move' && this.moveStart) {
+                this.moveTo(touch.clientX - this.moveStart.x, touch.clientY - this.moveStart.y);
+                this.moveStart = { x: touch.clientX, y: touch.clientY };
+            }
+        }
+        if (e.touches.length == 2) {
+            var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY), newDist = Grid.getDistance(t1, t2), factor = +(newDist / this.dist).toFixed(1), focus_1 = Grid.getMidpoint(t1, t2);
+            this.zoom(focus_1, factor);
+            this.dist = newDist;
+        }
+    };
+    Grid.prototype.handleZoom = function (e) {
+        var factor = e.deltaY < 0 ? 1.25 : .8;
         var pt = {
-            x: e.offsetX,
-            y: e.offsetY
+            x: e.clientX,
+            y: e.clientY
         };
-        this.zoom(pt, e.wheelDelta > 0);
+        this.zoom(pt, factor);
+    };
+    Grid.getDistance = function (p1, p2) {
+        return +Math.sqrt(Math.pow(p1.x - p2.x, 2) +
+            Math.pow(p1.y - p2.y, 2)).toFixed();
+    };
+    Grid.getMidpoint = function (p1, p2) {
+        return new Point((p1.x - p2.x) / 2, (p1.y - p2.y) / 2);
     };
     return Grid;
 })();
@@ -201,29 +252,26 @@ var $canvas = document.querySelector("#canvas");
 var $colorpicker = document.querySelector("#colorpicker");
 var $btns = document.querySelectorAll(".actions button");
 var $config = document.querySelectorAll(".config input");
-var $resetBtn = document.querySelector("#reset");
+// var $resetBtn = <any>document.querySelector("#reset");
 $canvas.width = window.innerWidth;
 $canvas.height = window.innerHeight;
 var grid = new Grid({
     canvas: $canvas,
-    ratio: [
-        +$config[0].value,
-        +$config[1].value
-    ],
-    scale: +$config[2].value
+    ratio: [500, 500],
+    scale: 2
 });
 Array.prototype.forEach.call($btns, function (el) {
     el.addEventListener('click', handleClickActionsBtn);
 });
-$resetBtn.addEventListener('click', function (e) {
-    grid.update({
-        ratio: [
-            +$config[0].value,
-            +$config[1].value
-        ],
-        scale: +$config[2].value
-    });
-});
+// $resetBtn.addEventListener('click', (e) => {
+//     grid.update({
+//         ratio: [
+//             +$config[0].value,
+//             +$config[1].value
+//         ],
+//         scale: +$config[2].value
+//     })
+// })
 document.addEventListener('keyup', function (e) {
     e.preventDefault();
     // console.log(e.which);
