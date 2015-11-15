@@ -183,7 +183,7 @@ var Grid = (function () {
         e.preventDefault();
         if (this.moveStart) {
             var pt = new Point(e.clientX - this.zp.x, e.clientY - this.zp.y).toRelativeUnit(this.cellSize);
-            if (this.mode === 'draw') {
+            if (this.mode === 'draw' && this.inGrid(pt)) {
                 this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
             }
             else if (this.mode === 'move') {
@@ -198,7 +198,9 @@ var Grid = (function () {
         if (touch) {
             var touchPoint = new Point(touch.clientX, touch.clientY);
             this.moveStart = touchPoint;
-            this.setCell(touchPoint, $colorpicker && $colorpicker.value || 'black');
+            if (this.inGrid(touchPoint)) {
+                this.setCell(touchPoint, $colorpicker && $colorpicker.value || 'black');
+            }
         }
         if (e.touches.length == 2) {
             var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY);
@@ -217,7 +219,7 @@ var Grid = (function () {
             e.touches[0] : null;
         if (touch) {
             var pt = new Point(touch.clientX - this.zp.x, touch.clientY - this.zp.y).toRelativeUnit(this.cellSize);
-            if (this.mode === 'draw') {
+            if (this.mode === 'draw' && this.inGrid(pt)) {
                 this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
             }
             else if (this.mode === 'move' && this.moveStart) {

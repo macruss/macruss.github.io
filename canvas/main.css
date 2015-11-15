@@ -7,32 +7,43 @@ body {
   display: block;
   cursor: default;
 }
-.left-block {
+.right-block {
   position: absolute;
   right: 0px;
 }
-.left-block .controls,
-.left-block .config {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .right-block {
+    bottom: 40px;
+  }
+}
+.right-block .controls,
+.right-block .config {
   vertical-align: top;
   width: 60px;
   margin: 40px 40px 0 0;
   z-index: 10;
 }
-.left-block .controls .input-group,
-.left-block .config .input-group {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .right-block .controls,
+  .right-block .config {
+    width: 180px;
+  }
+}
+.right-block .controls .input-group,
+.right-block .config .input-group {
   margin-bottom: 10px;
 }
-.left-block .controls .colorpicker input,
-.left-block .config .colorpicker input,
-.left-block .controls .actions input,
-.left-block .config .actions input {
+.right-block .controls .colorpicker input,
+.right-block .config .colorpicker input,
+.right-block .controls .actions input,
+.right-block .config .actions input {
   background: #ccc;
   height: 40px;
 }
-.left-block .controls .colorpicker button,
-.left-block .config .colorpicker button,
-.left-block .controls .actions button,
-.left-block .config .actions button {
+.right-block .controls .colorpicker button,
+.right-block .config .colorpicker button,
+.right-block .controls .actions button,
+.right-block .config .actions button {
   display: block;
   width: 60px;
   height: 60px;
@@ -40,22 +51,32 @@ body {
   font-size: 2em;
   outline: none;
 }
-.left-block .controls .colorpicker button:first-child,
-.left-block .config .colorpicker button:first-child,
-.left-block .controls .actions button:first-child,
-.left-block .config .actions button:first-child {
-  border-bottom: 0px;
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .right-block .controls .colorpicker button,
+  .right-block .config .colorpicker button,
+  .right-block .controls .actions button,
+  .right-block .config .actions button {
+    width: 180px;
+    height: 180px;
+    font-size: 5em;
+  }
+  .right-block .controls .colorpicker:first-child,
+  .right-block .config .colorpicker:first-child,
+  .right-block .controls .actions:first-child,
+  .right-block .config .actions:first-child {
+    border-bottom: 0px;
+  }
+  .right-block .controls .colorpicker:last-child,
+  .right-block .config .colorpicker:last-child,
+  .right-block .controls .actions:last-child,
+  .right-block .config .actions:last-child {
+    border-top: 0px;
+  }
 }
-.left-block .controls .colorpicker button:last-child,
-.left-block .config .colorpicker button:last-child,
-.left-block .controls .actions button:last-child,
-.left-block .config .actions button:last-child {
-  border-top: 0px;
-}
-.left-block .controls .colorpicker .selected,
-.left-block .config .colorpicker .selected,
-.left-block .controls .actions .selected,
-.left-block .config .actions .selected {
+.right-block .controls .colorpicker .selected,
+.right-block .config .colorpicker .selected,
+.right-block .controls .actions .selected,
+.right-block .config .actions .selected {
   color: #ccc;
   background: #333;
 }
