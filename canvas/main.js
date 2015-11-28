@@ -46,7 +46,7 @@ var Grid = (function () {
         this.canvas = conf.canvas;
         this.ctx = conf.canvas.getContext('2d');
         this.scale = conf.scale;
-        this.dist = null;
+        this.scaleOpt = {};
         this.cellSize = Math.round(this.scale * 5);
         this.wCells = conf.ratio[0];
         this.hCells = conf.ratio[1];
@@ -105,7 +105,7 @@ var Grid = (function () {
     };
     Grid.prototype.zoom = function (focus, factor) {
         var oldSize = this.cellSize;
-        this.scale = +Math.max(1, this.scale * factor).toFixed(1);
+        this.scale = +Math.max(1, this.scale * factor).toFixed(2);
         this.cellSize = Math.round(this.scale * 5);
         if (this.scale >= 1) {
             var k = 1 - this.cellSize / oldSize;
@@ -179,8 +179,7 @@ var Grid = (function () {
         var _this = this;
         e.preventDefault();
         this.moveStart = { x: e.clientX, y: e.clientY };
-        var moveEnd = { x: e.clientX, y: e.clientY };
-        var move = function () {
+        var moveEnd = { x: e.clientX, y: e.clientY }, move = function () {
             if (_this.moveStart) {
                 var deltaX = _this.moveStart.x - moveEnd.x, deltaY = _this.moveStart.y - moveEnd.y;
                 if (deltaX || deltaY)
@@ -205,7 +204,7 @@ var Grid = (function () {
     };
     Grid.prototype.handleTouchStart = function (e) {
         var _this = this;
-        var touch = e.touches && e.touches.length == 1 ?
+        var touch = e.touches && e.touches.length <= 2 ?
             e.touches[0] : null;
         if (touch) {
             var touchPoint = new Point(touch.clientX, touch.clientY);
@@ -215,32 +214,34 @@ var Grid = (function () {
             }
         }
         if (this.mode === 'move') {
-            var moveEnd = { x: touch.clientX, y: touch.clientY };
+            var moveEnd = { x: touch.clientX, y: touch.clientY }, newDist;
+            if (e.touches.length == 2) {
+                var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY);
+                this.scaleOpt.dist = newDist = Grid.getDistance(t1, t2);
+            }
             var move = function () {
                 if (_this.moveStart) {
                     var deltaX = _this.moveStart.x - moveEnd.x, deltaY = _this.moveStart.y - moveEnd.y;
                     if (deltaX || deltaY)
                         _this.moveTo(deltaX, deltaY);
                     moveEnd = { x: _this.moveStart.x, y: _this.moveStart.y };
+                    if (newDist) {
+                        var factor = +(_this.scaleOpt.dist / newDist).toFixed(2);
+                        _this.zoom(_this.scaleOpt.focus, factor);
+                        newDist = _this.scaleOpt.dist;
+                    }
                     requestAnimationFrame(move);
                 }
             };
             move();
         }
-        if (e.touches.length == 2) {
-            var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY);
-            this.dist = Grid.getDistance(t1, t2);
-        }
     };
     Grid.prototype.handleTouchEnd = function (e) {
-        if (this.dist) {
-            this.dist = null;
-        }
         this.moveStart = null;
     };
     Grid.prototype.handleTouchMove = function (e) {
         e.preventDefault();
-        var touch = e.touches && e.touches.length == 1 ?
+        var touch = e.touches && e.touches.length <= 2 ?
             e.touches[0] : null;
         if (touch) {
             var pt = new Point(touch.clientX - this.zp.x, touch.clientY - this.zp.y).toRelativeUnit(this.cellSize);
@@ -252,14 +253,15 @@ var Grid = (function () {
             }
         }
         if (e.touches.length == 2) {
-            var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY), newDist = Grid.getDistance(t1, t2), factor = +(newDist / this.dist).toFixed(1), focus_1 = Grid.getMidpoint(t1, t2);
-            this.zoom(focus_1, factor);
-            this.dist = newDist;
+            var t1 = new Point(e.touches[0].clientX, e.touches[0].clientY), t2 = new Point(e.touches[1].clientX, e.touches[1].clientY);
+            this.scaleOpt = {
+                dist: Grid.getDistance(t1, t2),
+                focus: Grid.getMidpoint(t1, t2)
+            };
         }
     };
     Grid.prototype.handleZoom = function (e) {
-        var factor = e.deltaY < 0 ? 1.25 : .8;
-        var pt = {
+        var factor = e.deltaY < 0 ? 1.25 : .8, pt = {
             x: e.clientX,
             y: e.clientY
         };
@@ -270,7 +272,7 @@ var Grid = (function () {
             Math.pow(p1.y - p2.y, 2)).toFixed();
     };
     Grid.getMidpoint = function (p1, p2) {
-        return new Point((p1.x - p2.x) / 2, (p1.y - p2.y) / 2);
+        return new Point(Math.min(p1.x, p2.x) + Math.abs(p1.x - p2.x) / 2, Math.min(p1.y, p2.y) + Math.abs(p1.y - p2.y) / 2);
     };
     return Grid;
 })();
