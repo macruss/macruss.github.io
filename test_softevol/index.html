@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <title>Contacts</title>
+</head>
+<body>
+  <div class="container">
+  <h1>Contacts</h1>
+    <table id="user-list" class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody data-repeat="users">
+        <tr>
+          <td data-bind="name"></td>
+          <td data-bind="email"></td>
+          <td data-bind="phone"></td>
+          <td data-bind="address"></td>
+          <td>
+            <span class="glyphicon glyphicon-edit edit-user" role="button" tabindex="0"></span>
+            <span class="glyphicon glyphicon-trash remove-user" title="remove"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+<!--     <div class="popover" role="tooltip">
+      <div class="arrow"></div>
+      <h3 class="popover-title"></h3>
+      <div class="popover-content">
+        
+      </div>
+    </div> -->
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="js/app.dataBinder.js"></script>
+  <script src="js/app.user.js"></script>
+  <script src="js/app.list.js"></script>
+  <script src="js/app.users.js"></script>
+  <script src="js/app.edit.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
