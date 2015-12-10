@@ -4,29 +4,34 @@ app = ( function ( app ) {
 
   var edit = {
 
-    init: function ( $btns ) {
-      $btns.on( 'click', function () {
+    init: function ( $list ) {
+      $list.delegate('.edit-user', 'click', function () {
         var $btn = $( this )
-        
-        $btn.closest( 'tr' )
-          .attr( 'contentEditable', true )
-          .focus()
-          .on('blur', function onblurHandler() {
-             $( this )
-              .attr( 'contentEditable', false)
-              .off( 'blur', onblurHandler );
 
-             $btn.trigger( 'disable.editor' )
-             $btn.parent().children().removeClass( 'hidden' );
-          });
-
-        $btn.parent().children().addClass('hidden');
+        $btn
+          .trigger( 'enable.editor' )
+          .siblings( '.end-edit' )
+            .removeClass( 'hide' )
+          .closest( 'td' )
+            .siblings()
+              .attr( 'contentEditable', true );
 
         var firstEditablElement = $btn.closest( 'tr' ).find( 'td:first' )[0];
+        
         setCursor( firstEditablElement );
-
-        $btn.trigger( 'enable.editor' );
       })
+
+      $list.delegate('.end-edit', 'click', function () {
+        $( this )
+          .addClass( 'hide' )
+          .siblings('.edit-user')
+            .trigger( 'disable.editor' )
+          .closest( 'td' )
+            .siblings()
+              .attr( 'contentEditable', false );
+      });
+
+      var $btns = $list.find('.edit-user');
 
       $btns.on( 'enable.editor', function () {
         $(this)

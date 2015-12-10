@@ -16,7 +16,7 @@ app = ( function ( app ) {
     });
 
     // init edit form
-    app.edit.init( $('.edit-user') );
+    app.edit.init( $userList );
 
     console.log('all users are resived');
   }
