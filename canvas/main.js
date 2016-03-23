@@ -72,6 +72,8 @@ var Grid = (function () {
     }
     Grid.prototype.draw = function () {
         var size = this.cellSize, gridWidth = toPixel(this.wCells, size), gridHeight = toPixel(this.hCells, size), zp = this.zp, ctx = this.ctx, begin = new Point(Math.max(0, zp.x % size - zp.x - size), Math.max(0, zp.y % size - zp.y - size)), end = new Point(Math.min(this.canvas.width - zp.x, gridWidth), Math.min(this.canvas.height - zp.y, gridHeight)), _begin = begin.toRelativeUnit(size), _end = end.toRelativeUnit(size);
+        ctx.strokeStyle = 'lightgray';
+        ctx.lineWidth = 1;
         ctx.beginPath();
         for (var x = begin.x + 0.5; x <= end.x + 1; x += size) {
             ctx.moveTo(x, 0);
@@ -81,11 +83,25 @@ var Grid = (function () {
             ctx.moveTo(0, y);
             ctx.lineTo(end.x, y);
         }
-        ctx.strokeStyle = 'lightgray';
         ctx.stroke();
-        for (var x = _begin.x; x <= _end.x; x++) {
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (var x = begin.x; x <= end.x + 1; x += size) {
+            if (!(x % (10 * size))) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, end.y);
+            }
+        }
+        for (var y = begin.y; y <= end.y + 1; y += size) {
+            if (!(y % (10 * size))) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(end.x, y);
+            }
+        }
+        ctx.stroke();
+        for (var x = _begin.x, cell = void 0; x <= _end.x; x++) {
             for (var y = _begin.y; y <= _end.y; y++) {
-                var cell = this.cells[x + this.wCells * y];
+                cell = this.cells[x + this.wCells * y];
                 if (cell)
                     cell.draw();
             }
