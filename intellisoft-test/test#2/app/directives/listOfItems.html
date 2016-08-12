@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Item name</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in items">
+      <td>{{item.value}}</td>
+      <td><a ng-href="#/list/edit/{{item.id}}">edit</a></td>
+      <td><a href="" ng-click="remove(item)">remove</a></td>
+    </tr>
+  </tbody>
+</table>

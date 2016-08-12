@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='App'>
+<head>
+  <meta charset="UTF-8">
+  <base href="/static/">
+  <title>Test#2</title>
+  <style>
+    table {
+      width: 500px;
+      border-collapse: collapse;
+    }
+    td, th {
+      border: 1px solid black;
+      text-align: left;
+      padding: 5px 10px;
+    }
+    th:first-child {
+      width: 70%;
+    } 
+  </style>
+</head>
+<body>
+  <div ng-view></div>
+
+  <!-- Vendor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-route.min.js"></script>
+
+  <!-- App -->
+  <script src="./app/app.js"></script>
+  <script src="./app/app.routes.js"></script>
+  <script src="./app/controllers/list.controller.js"></script>
+  <script src="./app/controllers/add.controller.js"></script>
+  <script src="./app/controllers/edit.controller.js"></script>
+  <script src="./app/directives/editForm.directive.js"></script>
+  <script src="./app/directives/listOfItems.directive.js"></script>
+  <script src="./app/services/items.service.js"></script>
+  <script src="./app/services/uuid.service.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+html, body, ul, li, h1, aside, menu {
+  font-family: Arial;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+header, footer, aside, .content {
+  background: #C8E0EA;
+  padding: 10px;
+  text-align: center;
+}
+ul {
+  list-style: none;
+}
+
+li {
+  margin: 5px;
+}
+
+header, footer {
+  min-height: 50px;
+}
+
+.wrapper {
+  margin: 20px 0;
+  position: relative;
+}
+
+.container {
+  max-width: 1170px;
+  margin: 0 auto;
+}
+
+aside,
+.content {
+  display: inline-block;
+  vertical-align: top;
+}
+
+aside {
+  width: 160px;
+  margin-bottom: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%
+}
+
+.content {
+  width: calc(100% - 200px);
+  text-align: center;
+}
+
+.content ul {
+  display: inline-table;
+  margin: 0 auto;
+}
+
+.content li {
+  display: inline-block;
+}
+
+@media screen and (max-width: 740px) {
+  aside,
+  .content {
+    display: block;
+    position: static;
+    width: 100%;
+  }
+}

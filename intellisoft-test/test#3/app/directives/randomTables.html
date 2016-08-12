@@ -1,0 +1,24 @@
+<section class="table">
+  <nav>
+    <ul>
+      <li ng-class="{active: vm.activeTable === key}"
+        ng-repeat="(key, value) in vm.tables">
+        <a href="" ng-click="selectTable(key)">{{key}}</a>
+      </li>
+    </ul>
+  </nav>
+  <table>
+    <thead>
+      <tr>
+        <th>X</th>
+        <th>Y</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="p in vm.tables[vm.activeTable]">
+        <td>{{p.x}}</td>
+        <td>{{p.y}}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
